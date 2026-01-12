@@ -1,0 +1,433 @@
+{
+  "users": [
+    {
+      "id": "student1",
+      "username": "SV001",
+      "password": "123456",
+      "role": "student",
+      "name": "Nguyễn Văn An",
+      "studentId": "SV001",
+      "email": "student1@gmail.com"
+    },
+    {
+      "id": "student2",
+      "username": "SV002",
+      "password": "123456",
+      "role": "student",
+      "name": "Trần Thị Bình",
+      "studentId": "SV002",
+      "email": "student2@gmail.com"
+    },
+    {
+      "id": "student3",
+      "username": "SV003",
+      "password": "123456",
+      "role": "student",
+      "name": "Lê Văn Cường",
+      "studentId": "SV003",
+      "email": "student3@gmail.com"
+    },
+    {
+      "id": "student4",
+      "username": "SV004",
+      "password": "123456",
+      "role": "student",
+      "name": "Phạm Thị Dung",
+      "studentId": "SV004",
+      "email": "student4@gmail.com"
+    },
+    {
+      "id": "teacher1",
+      "username": "teacher1",
+      "password": "123456",
+      "role": "teacher",
+      "name": "Thầy Nguyễn Văn Giáo",
+      "teacherId": "GV001",
+      "email": "teacher1@gmail.com"
+    }
+  ],
+  "students": [
+    {
+      "id": "student1",
+      "name": "Nguyễn Văn An",
+      "studentId": "SV001",
+      "email": "student1@gmail.com",
+      "year": 1
+    },
+    {
+      "id": "student2",
+      "name": "Trần Thị Bình",
+      "studentId": "SV002",
+      "email": "student2@gmail.com",
+      "year": 2
+    },
+    {
+      "id": "student3",
+      "name": "Lê Văn Cường",
+      "studentId": "SV003",
+      "email": "student3@gmail.com",
+      "year": 1
+    },
+    {
+      "id": "student4",
+      "name": "Phạm Thị Dung",
+      "studentId": "SV004",
+      "email": "student4@gmail.com",
+      "year": 3
+    }
+  ],
+  "scores": {
+    "student1": {
+      "Toán": 8.5,
+      "Lý": 7.8,
+      "Hóa": 9.0,
+      "Văn": 8.2,
+      "Anh": 8.7
+    },
+    "student2": {
+      "Toán": 7.5,
+      "Lý": 8.0,
+      "Hóa": 7.2,
+      "Văn": 9.0,
+      "Anh": 8.5
+    },
+    "student3": {
+      "Toán": 9.0,
+      "Lý": 8.5,
+      "Hóa": 8.8,
+      "Văn": 7.5,
+      "Anh": 8.0
+    },
+    "student4": {
+      "Toán": 8.0,
+      "Lý": 7.5,
+      "Hóa": 8.5,
+      "Văn": 8.8,
+      "Anh": 9.2
+    }
+  },
+  "tests": {
+    "student1": [
+      {
+        "id": "test1",
+        "subject": "Toán",
+        "date": "2025-12-15",
+        "score": 8.5,
+        "type": "Giữa kỳ"
+      },
+      {
+        "id": "test2",
+        "subject": "Lý",
+        "date": "2025-12-20",
+        "score": 7.8,
+        "type": "Giữa kỳ"
+      },
+      {
+        "id": "test3",
+        "subject": "Hóa",
+        "date": "2026-01-10",
+        "score": 9.0,
+        "type": "Cuối kỳ"
+      },
+      {
+        "id": "test4",
+        "subject": "Văn",
+        "date": "2025-12-25",
+        "score": 8.2,
+        "type": "Giữa kỳ"
+      }
+    ],
+    "student2": [
+      {
+        "id": "test5",
+        "subject": "Toán",
+        "date": "2025-12-15",
+        "score": 7.5,
+        "type": "Giữa kỳ"
+      },
+      {
+        "id": "test6",
+        "subject": "Lý",
+        "date": "2025-12-20",
+        "score": 8.0,
+        "type": "Giữa kỳ"
+      },
+      {
+        "id": "test7",
+        "subject": "Văn",
+        "date": "2025-12-25",
+        "score": 9.0,
+        "type": "Cuối kỳ"
+      }
+    ],
+    "student3": [
+      {
+        "id": "test8",
+        "subject": "Toán",
+        "date": "2025-12-15",
+        "score": 9.0,
+        "type": "Giữa kỳ"
+      },
+      {
+        "id": "test9",
+        "subject": "Hóa",
+        "date": "2026-01-10",
+        "score": 8.8,
+        "type": "Cuối kỳ"
+      }
+    ],
+    "student4": [
+      {
+        "id": "test10",
+        "subject": "Anh",
+        "date": "2026-01-15",
+        "score": 9.2,
+        "type": "Cuối kỳ"
+      },
+      {
+        "id": "test11",
+        "subject": "Văn",
+        "date": "2025-12-25",
+        "score": 8.8,
+        "type": "Giữa kỳ"
+      }
+    ]
+  },
+  "tuition": {
+    "student1": {
+      "year1": {
+        "amount": 400000000,
+        "months": 12,
+        "total": 4800000000,
+        "paid": 2400000000,
+        "remaining": 2400000000,
+        "status": "partial"
+      },
+      "year2": {
+        "amount": 450000000,
+        "months": 12,
+        "total": 5400000000,
+        "paid": 0,
+        "remaining": 5400000000,
+        "status": "pending"
+      },
+      "year3": {
+        "amount": 500000000,
+        "months": 12,
+        "total": 6000000000,
+        "paid": 0,
+        "remaining": 6000000000,
+        "status": "pending"
+      }
+    },
+    "student2": {
+      "year1": {
+        "amount": 400000000,
+        "months": 12,
+        "total": 4800000000,
+        "paid": 4800000000,
+        "remaining": 0,
+        "status": "completed"
+      },
+      "year2": {
+        "amount": 450000000,
+        "months": 12,
+        "total": 5400000000,
+        "paid": 2700000000,
+        "remaining": 2700000000,
+        "status": "partial"
+      },
+      "year3": {
+        "amount": 500000000,
+        "months": 12,
+        "total": 6000000000,
+        "paid": 0,
+        "remaining": 6000000000,
+        "status": "pending"
+      }
+    },
+    "student3": {
+      "year1": {
+        "amount": 400000000,
+        "months": 12,
+        "total": 4800000000,
+        "paid": 4800000000,
+        "remaining": 0,
+        "status": "completed"
+      },
+      "year2": {
+        "amount": 450000000,
+        "months": 12,
+        "total": 5400000000,
+        "paid": 0,
+        "remaining": 5400000000,
+        "status": "pending"
+      },
+      "year3": {
+        "amount": 500000000,
+        "months": 12,
+        "total": 6000000000,
+        "paid": 0,
+        "remaining": 6000000000,
+        "status": "pending"
+      }
+    },
+    "student4": {
+      "year1": {
+        "amount": 400000000,
+        "months": 12,
+        "total": 4800000000,
+        "paid": 4800000000,
+        "remaining": 0,
+        "status": "completed"
+      },
+      "year2": {
+        "amount": 450000000,
+        "months": 12,
+        "total": 5400000000,
+        "paid": 5400000000,
+        "remaining": 0,
+        "status": "completed"
+      },
+      "year3": {
+        "amount": 500000000,
+        "months": 12,
+        "total": 6000000000,
+        "paid": 3000000000,
+        "remaining": 3000000000,
+        "status": "partial"
+      }
+    }
+  },
+  "schedule": {
+    "student1": {
+      "Monday": [
+        {"time": "07:00-08:30", "subject": "Toán", "room": "A101"},
+        {"time": "08:45-10:15", "subject": "Lý", "room": "B202"},
+        {"time": "13:00-14:30", "subject": "Văn", "room": "C301"}
+      ],
+      "Tuesday": [
+        {"time": "07:00-08:30", "subject": "Hóa", "room": "D401"},
+        {"time": "08:45-10:15", "subject": "Anh", "room": "A102"}
+      ],
+      "Wednesday": [
+        {"time": "07:00-08:30", "subject": "Toán", "room": "A101"},
+        {"time": "13:00-14:30", "subject": "Lý", "room": "B202"}
+      ],
+      "Thursday": [
+        {"time": "07:00-08:30", "subject": "Văn", "room": "C301"},
+        {"time": "08:45-10:15", "subject": "Hóa", "room": "D401"}
+      ],
+      "Friday": [
+        {"time": "07:00-08:30", "subject": "Anh", "room": "A102"},
+        {"time": "13:00-14:30", "subject": "Toán", "room": "A101"}
+      ],
+      "Saturday": [
+        {"time": "07:00-08:30", "subject": "Lý", "room": "B202"}
+      ]
+    },
+    "student2": {
+      "Monday": [
+        {"time": "07:00-08:30", "subject": "Toán", "room": "A101"},
+        {"time": "13:00-14:30", "subject": "Văn", "room": "C301"}
+      ],
+      "Tuesday": [
+        {"time": "07:00-08:30", "subject": "Hóa", "room": "D401"},
+        {"time": "08:45-10:15", "subject": "Anh", "room": "A102"}
+      ],
+      "Wednesday": [
+        {"time": "07:00-08:30", "subject": "Lý", "room": "B202"}
+      ],
+      "Thursday": [
+        {"time": "07:00-08:30", "subject": "Văn", "room": "C301"},
+        {"time": "08:45-10:15", "subject": "Toán", "room": "A101"}
+      ],
+      "Friday": [
+        {"time": "07:00-08:30", "subject": "Anh", "room": "A102"}
+      ],
+      "Saturday": []
+    },
+    "student3": {
+      "Monday": [
+        {"time": "07:00-08:30", "subject": "Toán", "room": "A101"},
+        {"time": "08:45-10:15", "subject": "Hóa", "room": "D401"}
+      ],
+      "Tuesday": [
+        {"time": "07:00-08:30", "subject": "Lý", "room": "B202"},
+        {"time": "13:00-14:30", "subject": "Văn", "room": "C301"}
+      ],
+      "Wednesday": [
+        {"time": "07:00-08:30", "subject": "Anh", "room": "A102"}
+      ],
+      "Thursday": [
+        {"time": "07:00-08:30", "subject": "Toán", "room": "A101"},
+        {"time": "08:45-10:15", "subject": "Hóa", "room": "D401"}
+      ],
+      "Friday": [
+        {"time": "07:00-08:30", "subject": "Lý", "room": "B202"}
+      ],
+      "Saturday": []
+    },
+    "student4": {
+      "Monday": [
+        {"time": "07:00-08:30", "subject": "Văn", "room": "C301"},
+        {"time": "08:45-10:15", "subject": "Anh", "room": "A102"}
+      ],
+      "Tuesday": [
+        {"time": "07:00-08:30", "subject": "Toán", "room": "A101"},
+        {"time": "13:00-14:30", "subject": "Hóa", "room": "D401"}
+      ],
+      "Wednesday": [
+        {"time": "07:00-08:30", "subject": "Lý", "room": "B202"},
+        {"time": "08:45-10:15", "subject": "Văn", "room": "C301"}
+      ],
+      "Thursday": [
+        {"time": "07:00-08:30", "subject": "Anh", "room": "A102"}
+      ],
+      "Friday": [
+        {"time": "07:00-08:30", "subject": "Toán", "room": "A101"},
+        {"time": "08:45-10:15", "subject": "Hóa", "room": "D401"}
+      ],
+      "Saturday": [
+        {"time": "07:00-08:30", "subject": "Lý", "room": "B202"}
+      ]
+    }
+  },
+  "feedbacks": [
+    {
+      "id": "fb1",
+      "studentId": "student1",
+      "studentName": "Nguyễn Văn An",
+      "teacherId": "teacher1",
+      "subject": "Toán",
+      "message": "Giáo viên giảng bài rất dễ hiểu, nhưng mong thầy giải thích thêm về phần tích phân",
+      "date": "2025-12-20",
+      "status": "replied",
+      "reply": "Cảm ơn em. Thầy sẽ chuẩn bị bài giảng chi tiết về tích phân cho buổi tiếp theo. Hãy xem lại các bài tập trong sách giáo khoa nhé.",
+      "replyDate": "2025-12-21"
+    },
+    {
+      "id": "fb2",
+      "studentId": "student2",
+      "studentName": "Trần Thị Bình",
+      "teacherId": "teacher1",
+      "subject": "Văn",
+      "message": "Em cảm ơn thầy đã hướng dẫn tận tình trong bài văn nghị luận",
+      "date": "2025-12-22",
+      "status": "replied",
+      "reply": "Em làm rất tốt trong bài tập này. Hãy tiếp tục duy trì phong độ và luôn chú ý cấu trúc bài viết.",
+      "replyDate": "2025-12-23"
+    },
+    {
+      "id": "fb3",
+      "studentId": "student3",
+      "studentName": "Lê Văn Cường",
+      "teacherId": "teacher1",
+      "subject": "Hóa",
+      "message": "Thầy có thể cho thêm bài tập về nhà để em luyện tập thêm không ạ?",
+      "date": "2026-01-01",
+      "status": "pending"
+    }
+  ]
+}
+
