@@ -2,30 +2,23 @@ import { useState, useEffect } from 'react';
 import Login from './components/Login';
 import StudentDashboard from './components/StudentDashboard';
 import TeacherDashboard from './components/TeacherDashboard';
+import { AuthProvider, useAuth } from './contexts/AuthContext';
 import { loadData } from './utils/dataService';
 import './App.css';
 
-function App() {
-  const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true);
+function AppContent() {
+  const { user, logout, loading: authLoading } = useAuth();
+  const [dataLoading, setDataLoading] = useState(true);
 
   useEffect(() => {
     const initializeApp = async () => {
       await loadData();
-      setLoading(false);
+      setDataLoading(false);
     };
     initializeApp();
   }, []);
 
-  const handleLogin = (loggedInUser) => {
-    setUser(loggedInUser);
-  };
-
-  const handleLogout = () => {
-    setUser(null);
-  };
-
-  if (loading) {
+  if (authLoading || dataLoading) {
     return (
       <div style={{ 
         display: 'flex', 
@@ -41,18 +34,26 @@ function App() {
   }
 
   if (!user) {
-    return <Login onLogin={handleLogin} />;
+    return <Login />;
   }
 
   if (user.role === 'student') {
-    return <StudentDashboard user={user} onLogout={handleLogout} />;
+    return <StudentDashboard user={user} onLogout={logout} />;
   }
 
   if (user.role === 'teacher') {
-    return <TeacherDashboard user={user} onLogout={handleLogout} />;
+    return <TeacherDashboard user={user} onLogout={logout} />;
   }
 
   return null;
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
 }
 
 export default App;

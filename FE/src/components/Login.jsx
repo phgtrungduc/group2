@@ -1,12 +1,14 @@
 import { useState } from 'react';
-import { getUsers } from '../utils/dataService';
+import { useAuth } from '../contexts/AuthContext';
 
-function Login({ onLogin }) {
+function Login() {
+  const { login } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
 
@@ -15,13 +17,13 @@ function Login({ onLogin }) {
       return;
     }
 
-    const users = getUsers();
-    const user = users.find(u => u.username === username && u.password === password);
-
-    if (user) {
-      onLogin(user);
-    } else {
-      setError('Tên đăng nhập hoặc mật khẩu không đúng');
+    setLoading(true);
+    try {
+      await login(username, password);
+    } catch (err) {
+      setError(err.message || 'Tên đăng nhập hoặc mật khẩu không đúng');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -50,7 +52,9 @@ function Login({ onLogin }) {
             />
           </div>
           {error && <div className="error-message">{error}</div>}
-          <button type="submit" className="login-button">Đăng nhập</button>
+          <button type="submit" className="login-button" disabled={loading}>
+            {loading ? 'Đang đăng nhập...' : 'Đăng nhập'}
+          </button>
         </form>
       </div>
     </div>
