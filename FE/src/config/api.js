@@ -28,6 +28,7 @@ export const API_ENDPOINTS = {
   
   // Feedbacks
   FEEDBACKS: '/feedbacks',
+  TEACHERS: '/feedbacks/teachers',
   FEEDBACKS_BY_STUDENT: (studentId) => `/feedbacks/student/${studentId}`,
   FEEDBACK_REPLY: (id) => `/feedbacks/${id}/reply`,
 };

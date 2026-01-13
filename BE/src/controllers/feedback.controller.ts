@@ -38,23 +38,42 @@ export class FeedbackController {
   // POST /api/feedbacks - Tạo feedback mới
   async createFeedback(req: Request, res: Response, next: NextFunction) {
     try {
-      const { student_id, subject_id, message } = req.body;
+      const { student_id, teacher_id, message } = req.body;
       
-      if (!student_id || !message) {
+      if (!student_id || !teacher_id || !message) {
         return res.status(400).json({ 
           success: false, 
-          error: 'student_id and message are required' 
+          error: 'student_id, teacher_id and message are required' 
         });
       }
 
       const feedback = await this.feedbackRepo.create({
         student_id,
-        subject_id,
+        teacher_id,
         message,
         status: 'pending'
       });
 
       res.status(201).json({ success: true, data: feedback });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  // GET /api/feedbacks/teachers - Lấy danh sách giáo viên
+  async getTeachers(req: Request, res: Response, next: NextFunction) {
+    try {
+      const connection = await this.feedbackRepo['getConnection']();
+      try {
+        const [rows] = await connection.execute(
+          'SELECT id, code, name, email FROM users WHERE role = 3 ORDER BY name ASC'
+        );
+        connection.release();
+        res.status(200).json({ success: true, data: rows });
+      } catch (error) {
+        connection.release();
+        throw error;
+      }
     } catch (error) {
       next(error);
     }
@@ -72,7 +91,8 @@ export class FeedbackController {
 
       const updated = await this.feedbackRepo.update(id, { 
         reply,
-        status: 'replied'
+        status: 'replied',
+        replied_at: new Date()
       });
 
       if (!updated) {

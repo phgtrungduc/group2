@@ -2,8 +2,7 @@
 export interface Feedback {
   id: string;
   student_id: string;
-  teacher_id?: string;
-  subject_id?: string;
+  teacher_id: string; // Required - giáo viên được đánh giá
   message: string;
   reply?: string;
   status: 'pending' | 'replied' | 'resolved' | 'closed';
@@ -16,15 +15,14 @@ export interface Feedback {
 export interface FeedbackFull extends Feedback {
   student_name: string;
   student_code: string;
-  teacher_name?: string;
-  subject_name?: string;
+  teacher_name: string;
+  teacher_code: string;
 }
 
 // Create Feedback DTO
 export interface CreateFeedbackDto {
   student_id: string;
-  teacher_id?: string;
-  subject_id?: string;
+  teacher_id: string;
   message: string;
 }
 

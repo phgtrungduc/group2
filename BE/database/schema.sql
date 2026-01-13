@@ -133,17 +133,18 @@ CREATE TABLE tuition (
 -- ================================================
 CREATE TABLE feedbacks (
     id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-    student_id VARCHAR(36) NOT NULL COMMENT 'students.id',
-    subject_id VARCHAR(36) COMMENT 'Môn học liên quan',
-    message TEXT NOT NULL COMMENT 'Nội dung phản ánh',
+    student_id VARCHAR(36) NOT NULL COMMENT 'students.id - Học sinh đánh giá',
+    teacher_id VARCHAR(36) NOT NULL COMMENT 'users.id - Giáo viên được đánh giá (role=3)',
+    message TEXT NOT NULL COMMENT 'Nội dung đánh giá',
     reply TEXT COMMENT 'Câu trả lời từ giáo viên',
     status ENUM('pending', 'replied', 'resolved', 'closed') DEFAULT 'pending' COMMENT 'Trạng thái phản ánh',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     replied_at TIMESTAMP NULL COMMENT 'Thời gian trả lời',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
-    FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE SET NULL,
+    FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE,
     INDEX idx_student_id (student_id),
+    INDEX idx_teacher_id (teacher_id),
     INDEX idx_status (status),
     INDEX idx_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

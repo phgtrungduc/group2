@@ -107,8 +107,8 @@ function TeacherDashboard({ user, onLogout }) {
                       <div>
                         <h3>{feedback.studentName}</h3>
                         <p className="feedback-meta">
-                          <span>Môn: {feedback.subject}</span>
-                          <span>Ngày: {new Date(feedback.date).toLocaleDateString('vi-VN')}</span>
+                          {/* <span>Môn: {feedback.subject}</span> */}
+                          <span>Ngày: {new Date(feedback.created_at).toLocaleDateString('vi-VN')}</span>
                         </p>
                       </div>
                     </div>
@@ -118,7 +118,7 @@ function TeacherDashboard({ user, onLogout }) {
                       <div className="feedback-reply">
                         <h4>Trả lời của bạn:</h4>
                         <p className="reply-text">{feedback.reply}</p>
-                        <span className="reply-date">Ngày trả lời: {new Date(feedback.replyDate).toLocaleDateString('vi-VN')}</span>
+                        <span className="reply-date">Ngày trả lời: {new Date(feedback.replied_at).toLocaleDateString('vi-VN')}</span>
                       </div>
                     )}
 

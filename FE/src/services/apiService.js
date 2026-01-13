@@ -104,6 +104,10 @@ export const apiService = {
     return fetchAPI(url);
   },
 
+  async getTeachers() {
+    return fetchAPI(API_ENDPOINTS.TEACHERS);
+  },
+
   async getFeedbacksByStudent(studentId) {
     return fetchAPI(API_ENDPOINTS.FEEDBACKS_BY_STUDENT(studentId));
   },

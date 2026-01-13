@@ -1,63 +1,84 @@
 import { useState, useEffect } from 'react';
-import { addFeedback, getFeedbacks, replyFeedback } from '../utils/dataService';
+import { apiService } from '../services/apiService';
 
 function TeacherFeedback({ studentId, studentName }) {
-  const [subject, setSubject] = useState('');
+  const [teacherId, setTeacherId] = useState('');
+  const [teachers, setTeachers] = useState([]);
   const [message, setMessage] = useState('');
+  const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [myFeedbacks, setMyFeedbacks] = useState([]);
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
 
   useEffect(() => {
-    const feedbacks = getFeedbacks().filter(fb => fb.studentId === studentId);
-    setMyFeedbacks(feedbacks);
-  }, [studentId, submitted]);
+    loadTeachers();
+    loadFeedbacks();
+  }, [studentId]);
 
-  const subjects = ['Toán', 'Lý', 'Hóa', 'Văn', 'Anh'];
+  const loadTeachers = async () => {
+    try {
+      const data = await apiService.getTeachers();
+      setTeachers(data || []);
+    } catch (err) {
+      console.error('Không thể tải danh sách giáo viên:', err);
+    }
+  };
 
-  const handleSubmit = (e) => {
+  const loadFeedbacks = async () => {
+    try {
+      const data = await apiService.getFeedbacksByStudent(studentId);
+      setMyFeedbacks(data || []);
+    } catch (err) {
+      console.error('Không thể tải danh sách phản ánh:', err);
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
-    if (!subject || !message.trim()) {
-      alert('Vui lòng điền đầy đủ thông tin');
+    if (!teacherId || !message.trim()) {
+      alert('Vui lòng chọn giáo viên và nhập nội dung đánh giá');
       return;
     }
 
-    const newFeedback = {
-      id: `fb${Date.now()}`,
-      studentId: studentId,
-      studentName: studentName,
-      teacherId: 'teacher1',
-      subject: subject,
-      message: message.trim(),
-      date: new Date().toISOString().split('T')[0],
-      status: 'pending'
-    };
-
-    addFeedback(newFeedback);
-    const feedbacks = getFeedbacks().filter(fb => fb.studentId === studentId);
-    setMyFeedbacks(feedbacks);
-    setSubmitted(true);
-    setSubject('');
-    setMessage('');
-    
-    setTimeout(() => {
-      setSubmitted(false);
-    }, 3000);
+    try {
+      setLoading(true);
+      await apiService.createFeedback({
+        student_id: studentId,
+        teacher_id: teacherId,
+        message: message.trim()
+      });
+      
+      setSubmitted(true);
+      setTeacherId('');
+      setMessage('');
+      loadFeedbacks(); // Reload feedbacks
+      
+      setTimeout(() => {
+        setSubmitted(false);
+      }, 3000);
+    } catch (err) {
+      alert(err.message || 'Không thể gửi đánh giá');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleReply = (feedbackId) => {
+  const handleReply = async (feedbackId) => {
     if (!replyText.trim()) {
       alert('Vui lòng nhập nội dung trả lời');
       return;
     }
 
-    replyFeedback(feedbackId, replyText.trim());
-    const feedbacks = getFeedbacks().filter(fb => fb.studentId === studentId);
-    setMyFeedbacks(feedbacks);
-    setReplyingTo(null);
-    setReplyText('');
+    try {
+      await apiService.replyFeedback(feedbackId, replyText.trim());
+      loadFeedbacks(); // Reload feedbacks
+      setReplyingTo(null);
+      setReplyText('');
+    } catch (err) {
+      alert(err.message || 'Không thể gửi trả lời');
+    }
   };
 
   return (
@@ -65,52 +86,65 @@ function TeacherFeedback({ studentId, studentName }) {
       <h2>Phản ánh giáo viên</h2>
       
       <div className="feedback-form-section">
-        <h3>Gửi phản ánh mới</h3>
+        <h3>Đánh giá giáo viên</h3>
         <form onSubmit={handleSubmit} className="feedback-form">
           <div className="form-group">
-            <label>Môn học</label>
-            <select value={subject} onChange={(e) => setSubject(e.target.value)}>
-              <option value="">Chọn môn học</option>
-              {subjects.map(sub => (
-                <option key={sub} value={sub}>{sub}</option>
+            <label>Chọn giáo viên</label>
+            <select value={teacherId} onChange={(e) => setTeacherId(e.target.value)} disabled={loading}>
+              <option value="">-- Chọn giáo viên --</option>
+              {teachers.map(teacher => (
+                <option key={teacher.id} value={teacher.id}>
+                  {teacher.name} ({teacher.code})
+                </option>
               ))}
             </select>
           </div>
           <div className="form-group">
-            <label>Nội dung phản ánh</label>
+            <label>Nội dung đánh giá</label>
             <textarea
               value={message}
               onChange={(e) => setMessage(e.target.value)}
-              placeholder="Nhập nội dung phản ánh của bạn..."
+              placeholder="Nhập nội dung đánh giá của bạn về giáo viên..."
               rows="5"
+              disabled={loading}
             ></textarea>
           </div>
-          <button type="submit" className="submit-button">Gửi phản ánh</button>
-          {submitted && <div className="success-message">Đã gửi phản ánh thành công!</div>}
+          <button type="submit" className="submit-button" disabled={loading}>
+            {loading ? 'Đang gửi...' : 'Gửi đánh giá'}
+          </button>
+          {submitted && <div className="success-message">Đã gửi đánh giá thành công!</div>}
         </form>
       </div>
 
       <div className="feedback-history-section">
-        <h3>Lịch sử phản ánh</h3>
+        <h3>Lịch sử đánh giá</h3>
         {myFeedbacks.length === 0 ? (
-          <p className="no-data">Chưa có phản ánh nào</p>
+          <p className="no-data">Chưa có đánh giá nào</p>
         ) : (
           <div className="feedbacks-list">
-            {myFeedbacks.map(feedback => (
+            {myFeedbacks.map(feedback => {
+              const teacher = teachers.find(t => t.id === feedback.teacher_id);
+              return (
               <div key={feedback.id} className="feedback-card">
                 <div className="feedback-header">
-                  <span className="feedback-subject">{feedback.subject}</span>
+                  <span className="feedback-subject">
+                    Giáo viên: {teacher ? `${teacher.name} (${teacher.code})` : 'N/A'}
+                  </span>
+                  <span className={`status-badge ${feedback.status}`}>
+                    {feedback.status === 'pending' ? 'Chờ trả lời' : 
+                     feedback.status === 'replied' ? 'Đã trả lời' : feedback.status}
+                  </span>
                 </div>
                 <p className="feedback-message">{feedback.message}</p>
                 <div className="feedback-footer">
-                  <span>Ngày gửi: {new Date(feedback.date).toLocaleDateString('vi-VN')}</span>
+                  <span>Ngày gửi: {new Date(feedback.created_at).toLocaleDateString('vi-VN')}</span>
                 </div>
 
                 {feedback.reply && (
                   <div className="feedback-reply">
                     <h4>Trả lời từ giáo viên:</h4>
                     <p className="reply-text">{feedback.reply}</p>
-                    <span className="reply-date">Ngày trả lời: {new Date(feedback.replyDate).toLocaleDateString('vi-VN')}</span>
+                    <span className="reply-date">Ngày trả lời: {new Date(feedback.replied_at).toLocaleDateString('vi-VN')}</span>
                   </div>
                 )}
 
@@ -160,7 +194,8 @@ function TeacherFeedback({ studentId, studentName }) {
                   </div>
                 )}
               </div>
-            ))}
+            );
+            })}
           </div>
         )}
       </div>

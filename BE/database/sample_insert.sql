@@ -28,8 +28,12 @@ INSERT INTO users (username, password, role, code, name, email) VALUES
 ('SV003', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 2, 'SV003', 'Lê Hoàng Cường', 'lehoangcuong@student.edu.vn'),
 ('SV004', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 2, 'SV004', 'Phạm Thị Dung', 'phamthidung@student.edu.vn'),
 ('SV005', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 2, 'SV005', 'Hoàng Văn Em', 'hoangvanem@student.edu.vn'),
--- 1 Teacher
-('GV001', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 3, 'GV001', 'Nguyễn Thị Hương', 'nguyenthihuong@teacher.edu.vn');
+-- 5 Teachers (password: 123456)
+('GV001', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 3, 'GV001', 'Nguyễn Thị Hương', 'nguyenthihuong@teacher.edu.vn'),
+('GV002', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 3, 'GV002', 'Trần Văn Minh', 'tranvanminh@teacher.edu.vn'),
+('GV003', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 3, 'GV003', 'Lê Thị Lan', 'lethilan@teacher.edu.vn'),
+('GV004', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 3, 'GV004', 'Phạm Văn Hùng', 'phamvanhung@teacher.edu.vn'),
+('GV005', '$2b$10$EixZaYVK1fsbw1ZfbX3OXePaWxn96p36WQoeG6Lruj3vjPGga31lW', 3, 'GV005', 'Hoàng Thị Mai', 'hoangthimai@teacher.edu.vn');
 
 -- ================================================
 -- Insert Students (linked to 5 student users)

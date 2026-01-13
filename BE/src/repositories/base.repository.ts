@@ -4,7 +4,7 @@ import { pool } from '../config/database';
 export interface IBaseRepository<T> {
   findAll(filters?: any): Promise<T[]>;
   findById(id: string): Promise<T | null>;
-  create(data: any): Promise<T>;
+  create(data: any): Promise<any>;
   update(id: string, data: any): Promise<T | null>;
   delete(id: string): Promise<boolean>;
 }
@@ -82,7 +82,7 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
   /**
    * Create new record
    */
-  async create(data: any): Promise<T> {
+  async create(data: any): Promise<any> {
     const fields = Object.keys(data);
     const values = Object.values(data);
     const placeholders = fields.map(() => '?').join(', ');
@@ -90,8 +90,8 @@ export abstract class BaseRepository<T> implements IBaseRepository<T> {
     const sql = `INSERT INTO ${this.tableName} (${fields.join(', ')}) VALUES (${placeholders})`;
     const [result] = await this.pool.execute<ResultSetHeader>(sql, values);
 
-    // Return created record
-    return await this.findById(data.id) as T;
+    // Return result metadata (insertId, affectedRows, etc.)
+    return result;
   }
 
   /**
