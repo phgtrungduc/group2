@@ -109,48 +109,22 @@ CREATE TABLE tests (
 
 -- ================================================
 -- Table: tuition
--- Học phí theo năm học (Luỹ 1, 2, 3)
+-- Học phí theo năm học
 -- ================================================
 CREATE TABLE tuition (
     id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
     student_id VARCHAR(36) NOT NULL COMMENT 'students.id',
-    year_level INT NOT NULL CHECK (year_level BETWEEN 1 AND 3) COMMENT 'Năm học: 1 (Luỹ 1), 2 (Luỹ 2), 3 (Luỹ 3)',
-    academic_year VARCHAR(9) NOT NULL COMMENT 'Năm học: 2024-2025',
-    amount_per_month DECIMAL(12,2) NOT NULL COMMENT 'Học phí/tháng: 400tr(năm1), 450tr(năm2), 500tr(năm3)',
-    total_months INT NOT NULL DEFAULT 12 COMMENT 'Tổng số tháng',
-    total_amount DECIMAL(12,2) NOT NULL COMMENT 'Tổng học phí = amount_per_month * 12',
-    paid_amount DECIMAL(12,2) DEFAULT 0.00 COMMENT 'Số tiền đã đóng',
-    remaining_amount DECIMAL(12,2) NOT NULL COMMENT 'Số tiền còn lại',
-    status ENUM('pending', 'partial', 'completed') DEFAULT 'pending' COMMENT 'Trạng thái: chưa đóng, đang đóng, hoàn thành',
-    due_date DATE COMMENT 'Hạn đóng',
+    year INT NOT NULL COMMENT 'Năm học: 1, 2, 3',
+    amount DECIMAL(12,2) NOT NULL COMMENT 'Học phí/tháng',
+    months INT NOT NULL DEFAULT 12 COMMENT 'Số tháng',
+    paid DECIMAL(12,2) DEFAULT 0.00 COMMENT 'Số tiền đã đóng',
+    is_active BOOLEAN DEFAULT TRUE COMMENT 'Trạng thái hoạt động',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_student_year (student_id, year_level, academic_year),
+    UNIQUE KEY unique_student_year (student_id, year),
     INDEX idx_student_id (student_id),
-    INDEX idx_year_level (year_level),
-    INDEX idx_status (status),
-    INDEX idx_academic_year (academic_year)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ================================================
--- Table: tuition_payments
--- Lịch sử các lần đóng học phí
--- ================================================
-CREATE TABLE tuition_payments (
-    id VARCHAR(36) PRIMARY KEY DEFAULT (UUID()),
-    tuition_id VARCHAR(36) NOT NULL,
-    payment_amount DECIMAL(12,2) NOT NULL COMMENT 'Số tiền đóng',
-    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP COMMENT 'Ngày đóng',
-    payment_method ENUM('cash', 'bank_transfer', 'card', 'other') DEFAULT 'cash' COMMENT 'Phương thức thanh toán',
-    transaction_id VARCHAR(100) COMMENT 'Mã giao dịch',
-    remarks TEXT COMMENT 'Ghi chú',
-    created_by VARCHAR(36) COMMENT 'Người tạo',
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (tuition_id) REFERENCES tuition(id) ON DELETE CASCADE,
-    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL,
-    INDEX idx_tuition_id (tuition_id),
-    INDEX idx_payment_date (payment_date)
+    INDEX idx_year (year)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ================================================

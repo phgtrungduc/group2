@@ -163,11 +163,22 @@ JOIN subjects sub ON sub.subject_code = 'ANH'
 WHERE u.username = 'SV001';
 
 -- ================================================
+-- Insert Tuition for Student ID: 43f23bf2-f056-11f0-9219-8091334e7b10
+-- Year 1, 2: inactive (đã qua)
+-- Year 3: active (năm hiện tại)
+-- ================================================
+INSERT INTO tuition (student_id, year, amount, months, paid, is_active) VALUES
+('43f23bf2-f056-11f0-9219-8091334e7b10', 1, 400000.00, 12, 4800000.00, FALSE),  -- Năm 1: đã hoàn thành
+('43f23bf2-f056-11f0-9219-8091334e7b10', 2, 420000.00, 12, 5040000.00, FALSE),  -- Năm 2: đã hoàn thành
+('43f23bf2-f056-11f0-9219-8091334e7b10', 3, 450000.00, 12, 2700000.00, TRUE);   -- Năm 3: đang học (active)
+
+-- ================================================
 -- SUMMARY
 -- ================================================
 -- Users created: 7 (1 admin + 5 students + 1 teacher)
 -- Students created: 5
 -- Scores created: 20 (1 student × 5 subjects × 4 score types)
+-- Tuition records: 3 (1 student × 3 years)
 -- 
 -- Login credentials:
 -- Admin: username=admin, password=123456

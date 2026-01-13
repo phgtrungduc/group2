@@ -1,22 +1,25 @@
-// Tuition Entity
+// Tuition Entity (simplified schema - 4 base fields)
 export interface Tuition {
   id: string;
   student_id: string;
-  year_level: number; // 1, 2, 3
-  academic_year: string; // "2024-2025"
-  amount_per_month: number;
-  total_months: number;
-  total_amount: number;
-  paid_amount: number;
-  remaining_amount: number;
-  status: 'pending' | 'partial' | 'completed';
-  due_date?: Date;
+  year: number; // 1, 2, 3 (năm học)
+  amount: number; // Học phí/tháng
+  months: number; // Số tháng (default 12)
+  paid: number; // Số tiền đã đóng
+  is_active: boolean; // Năm hiện tại đang học
   created_at?: Date;
   updated_at?: Date;
 }
 
+// Tuition with computed fields for API response
+export interface TuitionWithComputed extends Tuition {
+  total: number; // amount * months
+  remaining: number; // total - paid
+  status: 'pending' | 'partial' | 'completed'; // computed from paid
+}
+
 // Tuition with student data
-export interface TuitionFull extends Tuition {
+export interface TuitionFull extends TuitionWithComputed {
   student_name: string;
   student_code: string;
 }
@@ -24,14 +27,15 @@ export interface TuitionFull extends Tuition {
 // Create Tuition DTO
 export interface CreateTuitionDto {
   student_id: string;
-  year_level: number;
-  academic_year: string;
+  year: number;
+  amount: number;
+  months?: number; // default 12
 }
 
 // Update Tuition DTO
 export interface UpdateTuitionDto {
-  due_date?: Date;
-  status?: 'pending' | 'partial' | 'completed';
+  paid?: number;
+  is_active?: boolean;
 }
 
 // Tuition Payment Entity

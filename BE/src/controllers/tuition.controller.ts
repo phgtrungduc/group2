@@ -8,11 +8,11 @@ export class TuitionController {
     this.tuitionRepo = new TuitionRepository();
   }
 
-  // GET /api/tuition/student/:studentId - Lấy tất cả học phí của student
+  // GET /api/tuition/student/:studentId - Lấy tất cả học phí của student với computed fields
   async getTuitionByStudent(req: Request, res: Response, next: NextFunction) {
     try {
       const { studentId } = req.params;
-      const tuition = await this.tuitionRepo.findAll({ student_id: studentId });
+      const tuition = await this.tuitionRepo.findByStudent(studentId);
       res.status(200).json({ success: true, data: tuition });
     } catch (error) {
       next(error);
