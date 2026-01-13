@@ -5,7 +5,7 @@ import TeacherFeedback from './TeacherFeedback';
 
 function StudentDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('scores');
-  const studentId = user.id;
+  const studentId = user.profile.id;
 
   const tabs = [
     { id: 'scores', label: 'Xem điểm' },

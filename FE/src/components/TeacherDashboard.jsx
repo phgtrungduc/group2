@@ -1,16 +1,57 @@
 import { useState, useEffect } from 'react';
 import StudentList from './StudentList';
 import StudentManagement from './StudentManagement';
-import { getFeedbacks, replyFeedback } from '../utils/dataService';
+import { apiService } from '../services/apiService';
 
 function TeacherDashboard({ user, onLogout }) {
   const [activeTab, setActiveTab] = useState('management');
+  const [students, setStudents] = useState([]);
   const [feedbacks, setFeedbacks] = useState([]);
   const [replyingTo, setReplyingTo] = useState(null);
   const [replyText, setReplyText] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
+  // Load students with scores
   useEffect(() => {
-    setFeedbacks(getFeedbacks());
+    const loadStudents = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        const data = await apiService.getAllStudentsWithScores();
+        setStudents(data);
+      } catch (err) {
+        console.error('Error loading students:', err);
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (activeTab === 'management' || activeTab === 'list') {
+      loadStudents();
+    }
+  }, [activeTab]);
+
+  // Load feedbacks
+  useEffect(() => {
+    const loadFeedbacks = async () => {
+      if (activeTab === 'feedbacks') {
+        try {
+          setLoading(true);
+          setError(null);
+          const data = await apiService.getAllFeedbacks();
+          setFeedbacks(data);
+        } catch (err) {
+          console.error('Error loading feedbacks:', err);
+          setError(err.message);
+        } finally {
+          setLoading(false);
+        }
+      }
+    };
+
+    loadFeedbacks();
   }, [activeTab]);
 
   const tabs = [
@@ -19,24 +60,39 @@ function TeacherDashboard({ user, onLogout }) {
     { id: 'feedbacks', label: 'Phản ánh từ học sinh' }
   ];
 
-  const handleReply = (feedbackId) => {
+  const handleReply = async (feedbackId) => {
     if (!replyText.trim()) {
       alert('Vui lòng nhập nội dung trả lời');
       return;
     }
 
-    replyFeedback(feedbackId, replyText.trim());
-    setFeedbacks(getFeedbacks());
-    setReplyingTo(null);
-    setReplyText('');
+    try {
+      await apiService.replyFeedback(feedbackId, replyText.trim());
+      // Reload feedbacks
+      const data = await apiService.getAllFeedbacks();
+      setFeedbacks(data);
+      setReplyingTo(null);
+      setReplyText('');
+    } catch (err) {
+      console.error('Error replying to feedback:', err);
+      alert('Có lỗi xảy ra khi gửi trả lời');
+    }
   };
 
   const renderContent = () => {
+    if (loading) {
+      return <div className="loading">Đang tải dữ liệu...</div>;
+    }
+
+    if (error) {
+      return <div className="error">Lỗi: {error}</div>;
+    }
+
     switch (activeTab) {
       case 'management':
-        return <StudentManagement />;
+        return <StudentManagement students={students} onUpdate={() => setActiveTab('management')} />;
       case 'list':
-        return <StudentList />;
+        return <StudentList students={students} />;
       case 'feedbacks':
         return (
           <div className="feedbacks-view">

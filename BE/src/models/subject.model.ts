@@ -3,9 +3,7 @@ export interface Subject {
   id: string;
   subject_code: string;
   subject_name: string;
-  credits: number;
-  description?: string;
-  is_active: boolean;
+  is_active?: boolean;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -14,14 +12,12 @@ export interface Subject {
 export interface CreateSubjectDto {
   subject_code: string;
   subject_name: string;
-  credits: number;
-  description?: string;
+  is_active?: boolean;
 }
 
 // Update Subject DTO
 export interface UpdateSubjectDto {
+  subject_code?: string;
   subject_name?: string;
-  credits?: number;
-  description?: string;
   is_active?: boolean;
 }

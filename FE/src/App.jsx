@@ -37,11 +37,25 @@ function AppContent() {
     return <Login />;
   }
 
-  if (user.role === 'student') {
+  // role: 1=admin, 2=student, 3=teacher
+  if (user.role === 1) {
+    // Admin thì hiển thị tất cả - có thể chọn view student hoặc teacher
+    return (
+      <div>
+        <div style={{ padding: '20px', borderBottom: '1px solid #ddd' }}>
+          <h2>Admin Dashboard</h2>
+          <button onClick={logout} style={{ marginLeft: '20px' }}>Đăng xuất</button>
+        </div>
+        <TeacherDashboard user={user} onLogout={logout} />
+      </div>
+    );
+  }
+
+  if (user.role === 2) {
     return <StudentDashboard user={user} onLogout={logout} />;
   }
 
-  if (user.role === 'teacher') {
+  if (user.role === 3) {
     return <TeacherDashboard user={user} onLogout={logout} />;
   }
 

@@ -335,6 +335,48 @@ body {
   width: 100%;
 }
 
+.subject-score-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.subject-score-section h3 {
+  margin: 0 0 16px 0;
+  color: #003d82;
+  font-size: 20px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.subject-score-section h3 span {
+  font-weight: 700;
+}
+
+.overall-average {
+  margin-top: 24px;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 12px;
+  text-align: center;
+}
+
+.overall-average h3 {
+  color: white;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.overall-average h3 span {
+  font-weight: 900;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
 .scores-table {
   overflow-x: auto;
 }
@@ -1406,7 +1448,7 @@ body {
 }
 
 .student-details {
-  max-width: 600px;
+  max-width: 700px;
 }
 
 .details-content {
@@ -1417,6 +1459,68 @@ body {
   margin: 12px 0;
   color: #333;
   font-size: 15px;
+  line-height: 1.6;
+}
+
+.details-content h4 {
+  color: #667eea;
+  margin: 20px 0 15px 0;
+  font-size: 18px;
+  font-weight: 600;
+  border-bottom: 2px solid #e0e0e0;
+  padding-bottom: 8px;
+}
+
+.subject-scores {
+  margin-bottom: 20px;
+  padding: 15px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.subject-scores strong {
+  display: block;
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.subject-scores ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.subject-scores li {
+  padding: 8px 0;
+  color: #555;
+  font-size: 14px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.subject-scores li:last-child {
+  border-bottom: none;
+}
+
+.close-modal-btn {
+  width: 100%;
+  padding: 12px;
+  background: #667eea;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-top: 20px;
+}
+
+.close-modal-btn:hover {
+  background: #5568d3;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
 }
 
 .scores-section {

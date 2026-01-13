@@ -7,3 +7,4 @@ export * from './score.model';
 export * from './test.model';
 export * from './tuition.model';
 export * from './feedback.model';
+export * from './schedule.model';

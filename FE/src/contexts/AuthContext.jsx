@@ -19,12 +19,7 @@ export const AuthProvider = ({ children }) => {
     // Check localStorage for existing session
     const savedUser = authService.getUser();
     if (savedUser && authService.isAuthenticated()) {
-      // Transform role number to string for component compatibility
-      const userData = {
-        ...savedUser,
-        role: savedUser.role === 1 ? 'admin' : savedUser.role === 2 ? 'student' : 'teacher',
-      };
-      setUser(userData);
+      setUser(savedUser);
     }
     setLoading(false);
   }, []);
@@ -33,7 +28,6 @@ export const AuthProvider = ({ children }) => {
     const result = await authService.login(username, password);
     const userData = {
       ...result.user,
-      role: result.user.role === 1 ? 'admin' : result.user.role === 2 ? 'student' : 'teacher',
       profile: result.profile,
     };
     setUser(userData);
