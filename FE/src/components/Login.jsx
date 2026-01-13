@@ -32,12 +32,12 @@ function Login({ onLogin }) {
         <h2>University of Technology and Management</h2>
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Mã sinh viên</label>
+            <label>Mã người dùng</label>
             <input
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
-              placeholder="Nhập mã sinh viên (VD: SV001)"
+              placeholder="Nhập mã người dùng (VD: SV001)"
             />
           </div>
           <div className="form-group">

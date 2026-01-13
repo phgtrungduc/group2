@@ -3,7 +3,8 @@ export interface User {
   id: string;
   username: string;
   password: string;
-  role: number; // 0=admin, 1=student, 2=teacher
+  role: number; // 1=admin, 2=student, 3=teacher
+  code?: string; // SV001, GV001, AD001
   name: string;
   email: string;
   created_at?: Date;
@@ -15,6 +16,7 @@ export interface CreateUserDto {
   username: string;
   password: string;
   role: number;
+  code?: string;
   name: string;
   email: string;
 }

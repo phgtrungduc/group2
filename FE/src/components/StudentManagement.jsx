@@ -20,7 +20,8 @@ function StudentManagement() {
     studentId: '',
     email: '',
     year: 1,
-    password: '123456'
+    password: '123456',
+    role: 'student'
   });
   const [editStudent, setEditStudent] = useState({});
   const [scoreData, setScoreData] = useState({ subject: '', score: '' });
@@ -44,7 +45,7 @@ function StudentManagement() {
     addStudent(newStudent);
     refreshStudents();
     setShowAddModal(false);
-    setNewStudent({ id: '', name: '', studentId: '', email: '', year: 1, password: '123456' });
+    setNewStudent({ id: '', name: '', studentId: '', email: '', year: 1, password: '123456', role: 'student' });
     alert('Thêm học sinh thành công!');
   };
 
@@ -184,7 +185,7 @@ function StudentManagement() {
     <div className="student-management">
       <div className="management-header">
         <h2>Quản lý học sinh</h2>
-        <button onClick={() => setShowAddModal(true)} className="add-button">+ Thêm học sinh</button>
+        <button onClick={() => setShowAddModal(true)} className="add-button">+ Thêm người dùng mới</button>
       </div>
 
       <div className="students-table-container">
@@ -269,7 +270,17 @@ function StudentManagement() {
       {showAddModal && (
         <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h3>Thêm học sinh mới</h3>
+            <h3>Thêm người dùng mới</h3>
+            <div className="form-group">
+              <label>Loại người dùng</label>
+              <select
+                value={newStudent.role}
+                onChange={(e) => setNewStudent({ ...newStudent, role: e.target.value })}
+              >
+                <option value="student">Học sinh</option>
+                <option value="teacher">Giáo viên</option>
+              </select>
+            </div>
             <div className="form-group">
               <label>ID đăng nhập</label>
               <input
@@ -280,12 +291,12 @@ function StudentManagement() {
               />
             </div>
             <div className="form-group">
-              <label>Mã sinh viên</label>
+              <label>{newStudent.role === 'student' ? 'Mã sinh viên' : newStudent.role === 'teacher' ? 'Mã giáo viên' : 'Mã người dùng'}</label>
               <input
                 type="text"
                 value={newStudent.studentId}
                 onChange={(e) => setNewStudent({ ...newStudent, studentId: e.target.value })}
-                placeholder="SV005"
+                placeholder={newStudent.role === 'student' ? 'SV005' : newStudent.role === 'teacher' ? 'GV001' : 'AD001'}
               />
             </div>
             <div className="form-group">
@@ -306,17 +317,19 @@ function StudentManagement() {
                 placeholder="student5@rmit.edu.vn"
               />
             </div>
-            <div className="form-group">
-              <label>Năm học</label>
-              <select
-                value={newStudent.year}
-                onChange={(e) => setNewStudent({ ...newStudent, year: parseInt(e.target.value) })}
-              >
-                <option value={1}>Năm 1</option>
-                <option value={2}>Năm 2</option>
-                <option value={3}>Năm 3</option>
-              </select>
-            </div>
+            {newStudent.role === 'student' && (
+              <div className="form-group">
+                <label>Năm học</label>
+                <input
+                  type="number"
+                  min="1"
+                  max="3"
+                  value={newStudent.year}
+                  onChange={(e) => setNewStudent({ ...newStudent, year: parseInt(e.target.value) || 1 })}
+                  placeholder="1"
+                />
+              </div>
+            )}
             <div className="modal-actions">
               <button onClick={handleAddStudent} className="save-button">Thêm</button>
               <button onClick={() => setShowAddModal(false)} className="cancel-button">Hủy</button>
@@ -347,14 +360,14 @@ function StudentManagement() {
             </div>
             <div className="form-group">
               <label>Năm học</label>
-              <select
+              <input
+                type="number"
+                min="1"
+                max="3"
                 value={editStudent.year}
-                onChange={(e) => setEditStudent({ ...editStudent, year: parseInt(e.target.value) })}
-              >
-                <option value={1}>Năm 1</option>
-                <option value={2}>Năm 2</option>
-                <option value={3}>Năm 3</option>
-              </select>
+                onChange={(e) => setEditStudent({ ...editStudent, year: parseInt(e.target.value) || 1 })}
+                placeholder="1"
+              />
             </div>
             <div className="modal-actions">
               <button onClick={handleEditStudent} className="save-button">Lưu</button>

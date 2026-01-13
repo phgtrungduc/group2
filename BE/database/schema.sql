@@ -20,7 +20,8 @@ CREATE TABLE users (
     id VARCHAR(36) PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE COMMENT 'SV001, GV001',
     password VARCHAR(255) NOT NULL,
-    role INT NOT NULL COMMENT '0=admin, 1=student, 2=teacher',
+    role INT NOT NULL COMMENT '1=admin, 2=student, 3=teacher',
+    code VARCHAR(20) COMMENT 'Mã: SV001, GV001, AD001',
     name VARCHAR(100) NOT NULL COMMENT 'Tên đầy đủ',
     email VARCHAR(100) NOT NULL UNIQUE,
     
@@ -28,6 +29,7 @@ CREATE TABLE users (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     INDEX idx_username (username),
+    INDEX idx_code (code),
     INDEX idx_role (role),
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -39,39 +41,12 @@ CREATE TABLE users (
 CREATE TABLE students (
     id VARCHAR(36) PRIMARY KEY,
     user_id VARCHAR(36) NOT NULL UNIQUE,
-    student_code VARCHAR(20) NOT NULL UNIQUE COMMENT 'Mã SV: SV001',
     year_level INT NOT NULL COMMENT 'Năm học: 1, 2, 3',
-    phone VARCHAR(15),
-    address TEXT,
-    date_of_birth DATE,
-    enrollment_date DATE COMMENT 'Ngày nhập học',
-    
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_student_code (student_code),
     INDEX idx_year_level (year_level)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
--- ================================================
--- Table: teachers
--- Thông tin riêng của giáo viên
--- ================================================
-CREATE TABLE teachers (
-    id VARCHAR(36) PRIMARY KEY,
-    user_id VARCHAR(36) NOT NULL UNIQUE,
-    teacher_code VARCHAR(20) NOT NULL UNIQUE COMMENT 'Mã GV: GV001',
-    department VARCHAR(100) COMMENT 'Khoa/Bộ môn',
-    specialization VARCHAR(100) COMMENT 'Chuyên môn',
-    phone VARCHAR(15),
-    hire_date DATE COMMENT 'Ngày tuyển dụng',
-    
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    INDEX idx_teacher_code (teacher_code)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- ================================================
@@ -105,12 +80,10 @@ CREATE TABLE scores (
     final_score DECIMAL(4,2) CHECK (final_score BETWEEN 0 AND 10) COMMENT 'Điểm cuối kỳ',
     average_score DECIMAL(4,2) CHECK (average_score BETWEEN 0 AND 10) COMMENT 'Điểm trung bình',
     grade VARCHAR(2) COMMENT 'Xếp loại: A, B, C, D, F',
-    teacher_id VARCHAR(36) COMMENT 'teachers.id - giáo viên chấm điểm',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
     FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
-    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE SET NULL,
     UNIQUE KEY unique_student_subject_semester (student_id, subject_id, semester, year_level),
     INDEX idx_student_id (student_id),
     INDEX idx_subject_id (subject_id),
@@ -131,12 +104,10 @@ CREATE TABLE tests (
     max_score DECIMAL(4,2) DEFAULT 10.00 COMMENT 'Điểm tối đa',
     weight DECIMAL(3,2) DEFAULT 1.00 COMMENT 'Trọng số',
     remarks TEXT COMMENT 'Ghi chú',
-    teacher_id VARCHAR(36) COMMENT 'teachers.id',
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
     FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
-    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE SET NULL,
     INDEX idx_student_id (student_id),
     INDEX idx_subject_id (subject_id),
     INDEX idx_test_date (test_date),
@@ -196,7 +167,6 @@ CREATE TABLE tuition_payments (
 CREATE TABLE feedbacks (
     id VARCHAR(36) PRIMARY KEY,
     student_id VARCHAR(36) NOT NULL COMMENT 'students.id',
-    teacher_id VARCHAR(36) COMMENT 'teachers.id',
     subject_id VARCHAR(36) COMMENT 'Môn học liên quan',
     message TEXT NOT NULL COMMENT 'Nội dung phản ánh',
     reply TEXT COMMENT 'Câu trả lời từ giáo viên',
@@ -205,10 +175,8 @@ CREATE TABLE feedbacks (
     replied_at TIMESTAMP NULL COMMENT 'Thời gian trả lời',
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (student_id) REFERENCES students(id) ON DELETE CASCADE,
-    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE SET NULL,
     FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE SET NULL,
     INDEX idx_student_id (student_id),
-    INDEX idx_teacher_id (teacher_id),
     INDEX idx_status (status),
     INDEX idx_created_at (created_at)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -219,7 +187,6 @@ CREATE TABLE feedbacks (
 CREATE TABLE schedules (
     id VARCHAR(36) PRIMARY KEY,
     subject_id VARCHAR(36) NOT NULL,
-    teacher_id VARCHAR(36) NOT NULL COMMENT 'teachers.id',
     year_level INT NOT NULL CHECK (year_level BETWEEN 1 AND 3) COMMENT 'Năm học',
     day_of_week ENUM('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') NOT NULL COMMENT 'Thứ trong tuần',
     start_time TIME NOT NULL COMMENT 'Giờ bắt đầu',
@@ -231,9 +198,7 @@ CREATE TABLE schedules (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE CASCADE,
-    FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE CASCADE,
     INDEX idx_subject_id (subject_id),
-    INDEX idx_teacher_id (teacher_id),
     INDEX idx_day_of_week (day_of_week),
     INDEX idx_academic_year (academic_year, semester)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -322,40 +287,20 @@ DELIMITER ;
 CREATE VIEW view_students_full AS
 SELECT 
     s.id,
-    s.student_code,
+    u.code,
     u.username,
     u.name,
     u.email,
     u.role,
-    s.year_level,
-    s.phone,
-    s.address,
-    s.date_of_birth,
-    s.enrollment_date
+    s.year_level
 FROM students s
 JOIN users u ON s.user_id = u.id;
-
--- View: Thông tin giáo viên đầy đủ
-CREATE VIEW view_teachers_full AS
-SELECT 
-    t.id,
-    t.teacher_code,
-    u.username,
-    u.name,
-    u.email,
-    u.role,
-    t.department,
-    t.specialization,
-    t.phone,
-    t.hire_date
-FROM teachers t
-JOIN users u ON t.user_id = u.id;
 
 -- View: Điểm trung bình của học sinh
 CREATE VIEW view_student_gpa AS
 SELECT 
     s.id AS student_id,
-    s.student_code,
+    u.code,
     u.name,
     s.year_level,
     ROUND(AVG(sc.average_score), 2) AS gpa,
@@ -363,12 +308,12 @@ SELECT
 FROM students s
 JOIN users u ON s.user_id = u.id
 LEFT JOIN scores sc ON s.id = sc.student_id
-GROUP BY s.id, s.student_code, u.name, s.year_level;
+GROUP BY s.id, u.code, u.name, s.year_level;
 
 -- View: Tổng quan học phí
 CREATE VIEW view_tuition_summary AS
 SELECT 
-    s.student_code,
+    u.code,
     u.name,
     t.year_level,
     t.academic_year,
@@ -393,11 +338,8 @@ CREATE PROCEDURE sp_add_student(
     IN p_password VARCHAR(255),
     IN p_name VARCHAR(100),
     IN p_email VARCHAR(100),
-    IN p_student_code VARCHAR(20),
-    IN p_year_level INT,
-    IN p_phone VARCHAR(20),
-    IN p_address TEXT,
-    IN p_date_of_birth DATE
+    IN p_code VARCHAR(20),
+    IN p_year_level INT
 )
 BEGIN
     DECLARE new_user_id VARCHAR(36);
@@ -410,12 +352,12 @@ BEGIN
     SET new_student_id = UUID();
     
     -- Thêm user
-    INSERT INTO users (id, username, password, role, name, email)
-    VALUES (new_user_id, p_username, p_password, 1, p_name, p_email);
+    INSERT INTO users (id, username, password, role, code, name, email)
+    VALUES (new_user_id, p_username, p_password, 2, p_code, p_name, p_email);
     
     -- Thêm student
-    INSERT INTO students (id, user_id, student_code, year_level, phone, address, date_of_birth, enrollment_date)
-    VALUES (new_student_id, new_user_id, p_student_code, p_year_level, p_phone, p_address, p_date_of_birth, CURDATE());
+    INSERT INTO students (id, user_id, year_level)
+    VALUES (new_student_id, new_user_id, p_year_level);
     
     -- Tạo học phí cho học sinh
     INSERT INTO tuition (id, student_id, year_level, academic_year, amount_per_month, total_months, total_amount, paid_amount, remaining_amount, status)
@@ -447,40 +389,6 @@ BEGIN
     COMMIT;
     
     SELECT new_student_id AS student_id, new_user_id AS user_id, 'Student created successfully' AS message;
-END$$
-
--- Procedure: Thêm giáo viên mới
-CREATE PROCEDURE sp_add_teacher(
-    IN p_username VARCHAR(50),
-    IN p_password VARCHAR(255),
-    IN p_name VARCHAR(100),
-    IN p_email VARCHAR(100),
-    IN p_teacher_code VARCHAR(20),
-    IN p_department VARCHAR(100),
-    IN p_specialization VARCHAR(100),
-    IN p_phone VARCHAR(20)
-)
-BEGIN
-    DECLARE new_user_id VARCHAR(36);
-    DECLARE new_teacher_id VARCHAR(36);
-    
-    START TRANSACTION;
-    
-    -- Generate UUIDs
-    SET new_user_id = UUID();
-    SET new_teacher_id = UUID();
-    
-    -- Thêm user
-    INSERT INTO users (id, username, password, role, name, email)
-    VALUES (new_user_id, p_username, p_password, 2, p_name, p_email);
-    
-    -- Thêm teacher
-    INSERT INTO teachers (id, user_id, teacher_code, department, specialization, phone, hire_date)
-    VALUES (new_teacher_id, new_user_id, p_teacher_code, p_department, p_specialization, p_phone, CURDATE());
-    
-    COMMIT;
-    
-    SELECT new_teacher_id AS teacher_id, new_user_id AS user_id, 'Teacher created successfully' AS message;
 END$$
 
 -- Procedure: Tạo học phí cho năm học mới

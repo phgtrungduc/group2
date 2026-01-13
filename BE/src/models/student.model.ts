@@ -2,12 +2,7 @@
 export interface Student {
   id: string;
   user_id: string;
-  student_code: string;
   year_level: number; // 1, 2, 3
-  phone?: string;
-  address?: string;
-  date_of_birth?: Date;
-  enrollment_date: Date;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -15,6 +10,7 @@ export interface Student {
 // Student with User data (JOIN result)
 export interface StudentFull extends Student {
   username: string;
+  code?: string;
   name: string;
   email: string;
   role: number;
@@ -26,16 +22,11 @@ export interface CreateStudentDto {
   password: string;
   name: string;
   email: string;
-  student_code: string;
+  code?: string;
   year_level: number;
-  phone?: string;
-  address?: string;
-  date_of_birth?: Date;
 }
 
 // Update Student DTO
 export interface UpdateStudentDto {
-  phone?: string;
-  address?: string;
   year_level?: number;
 }

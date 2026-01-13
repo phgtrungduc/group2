@@ -56,9 +56,9 @@ Hệ thống sử dụng MySQL với thiết kế 3 bảng chính:
 
 ## 🔑 Roles
 
-- **role = 0**: Admin - Quản trị hệ thống
-- **role = 1**: Student - Học sinh
-- **role = 2**: Teacher - Giáo viên
+- **role = 1**: Admin - Quản trị hệ thống
+- **role = 2**: Student - Học sinh
+- **role = 3**: Teacher - Giáo viên
 
 ## ✨ Tính năng
 

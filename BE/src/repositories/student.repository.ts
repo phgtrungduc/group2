@@ -1,39 +1,19 @@
 import { BaseRepository } from './base.repository';
 import { Student, StudentFull, CreateStudentDto } from '../models';
 import { v4 as uuidv4 } from 'uuid';
-import bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcryptjs';
 
 export class StudentRepository extends BaseRepository<Student> {
   constructor() {
     super('students');
   }
 
-  /**
-   * Get all students with user data
-   */
-  async findAllFull(): Promise<StudentFull[]> {
-    const sql = `
-      SELECT 
-        s.*,
-        u.username,
-        u.name,
-        u.email,
-        u.role
-      FROM students s
-      JOIN users u ON s.user_id = u.id
-      ORDER BY s.created_at DESC
-    `;
-    return this.query<StudentFull>(sql);
-  }
-
-  /**
-   * Get student by ID with user data
-   */
   async findByIdFull(id: string): Promise<StudentFull | null> {
     const sql = `
       SELECT 
         s.*,
         u.username,
+        u.code,
         u.name,
         u.email,
         u.role
@@ -44,43 +24,11 @@ export class StudentRepository extends BaseRepository<Student> {
     return this.queryOne<StudentFull>(sql, [id]);
   }
 
-  /**
-   * Find student by student code
-   */
-  async findByStudentCode(studentCode: string): Promise<Student | null> {
-    return this.queryOne<Student>(
-      `SELECT * FROM ${this.tableName} WHERE student_code = ?`,
-      [studentCode]
-    );
-  }
-
-  /**
-   * Find student by user_id
-   */
   async findByUserId(userId: string): Promise<Student | null> {
     return this.queryOne<Student>(
       `SELECT * FROM ${this.tableName} WHERE user_id = ?`,
       [userId]
     );
-  }
-
-  /**
-   * Find students by year level
-   */
-  async findByYearLevel(yearLevel: number): Promise<StudentFull[]> {
-    const sql = `
-      SELECT 
-        s.*,
-        u.username,
-        u.name,
-        u.email,
-        u.role
-      FROM students s
-      JOIN users u ON s.user_id = u.id
-      WHERE s.year_level = ?
-      ORDER BY s.student_code
-    `;
-    return this.query<StudentFull>(sql, [yearLevel]);
   }
 
   /**
@@ -98,16 +46,16 @@ export class StudentRepository extends BaseRepository<Student> {
 
       // Insert user
       await connection.execute(
-        `INSERT INTO users (id, username, password, role, name, email) 
-         VALUES (?, ?, ?, 1, ?, ?)`,
-        [userId, data.username, hashedPassword, data.name, data.email]
+        `INSERT INTO users (id, username, password, role, code, name, email) 
+         VALUES (?, ?, ?, 2, ?, ?, ?)`,
+        [userId, data.username, hashedPassword, data.code, data.name, data.email]
       );
 
       // Insert student
       await connection.execute(
-        `INSERT INTO students (id, user_id, student_code, year_level, phone, address, date_of_birth, enrollment_date) 
-         VALUES (?, ?, ?, ?, ?, ?, ?, CURDATE())`,
-        [studentId, userId, data.student_code, data.year_level, data.phone, data.address, data.date_of_birth]
+        `INSERT INTO students (id, user_id, year_level) 
+         VALUES (?, ?, ?)`,
+        [studentId, userId, data.year_level]
       );
 
       // Create tuition record
@@ -131,16 +79,5 @@ export class StudentRepository extends BaseRepository<Student> {
       connection.release();
       throw error;
     }
-  }
-
-  /**
-   * Check if student code exists
-   */
-  async existsByStudentCode(studentCode: string): Promise<boolean> {
-    const result = await this.queryOne<{ count: number }>(
-      `SELECT COUNT(*) as count FROM ${this.tableName} WHERE student_code = ?`,
-      [studentCode]
-    );
-    return (result?.count || 0) > 0;
   }
 }
