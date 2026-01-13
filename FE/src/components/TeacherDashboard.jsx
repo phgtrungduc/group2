@@ -33,14 +33,14 @@ function TeacherDashboard({ user, onLogout }) {
     }
   }, [activeTab]);
 
-  // Load feedbacks
+  // Load feedbacks for this teacher
   useEffect(() => {
     const loadFeedbacks = async () => {
       if (activeTab === 'feedbacks') {
         try {
           setLoading(true);
           setError(null);
-          const data = await apiService.getAllFeedbacks();
+          const data = await apiService.getFeedbacksByTeacher(user.id);
           setFeedbacks(data);
         } catch (err) {
           console.error('Error loading feedbacks:', err);
@@ -52,7 +52,7 @@ function TeacherDashboard({ user, onLogout }) {
     };
 
     loadFeedbacks();
-  }, [activeTab]);
+  }, [activeTab, user.id]);
 
   const tabs = [
     { id: 'management', label: 'Quản lý học sinh' },
@@ -68,8 +68,8 @@ function TeacherDashboard({ user, onLogout }) {
 
     try {
       await apiService.replyFeedback(feedbackId, replyText.trim());
-      // Reload feedbacks
-      const data = await apiService.getAllFeedbacks();
+      // Reload feedbacks for this teacher
+      const data = await apiService.getFeedbacksByTeacher(user.id);
       setFeedbacks(data);
       setReplyingTo(null);
       setReplyText('');
@@ -105,9 +105,9 @@ function TeacherDashboard({ user, onLogout }) {
                   <div key={feedback.id} className="feedback-card">
                     <div className="feedback-header">
                       <div>
-                        <h3>{feedback.studentName}</h3>
+                        <h3>{feedback.student_name}</h3>
                         <p className="feedback-meta">
-                          {/* <span>Môn: {feedback.subject}</span> */}
+                          <span>Mã SV: {feedback.student_code}</span>
                           <span>Ngày: {new Date(feedback.created_at).toLocaleDateString('vi-VN')}</span>
                         </p>
                       </div>

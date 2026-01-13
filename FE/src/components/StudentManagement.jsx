@@ -5,7 +5,17 @@ function StudentManagement({ students = [], onUpdate }) {
   const [localStudents, setLocalStudents] = useState(students);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
   const [editStudent, setEditStudent] = useState({});
+  const [newStudent, setNewStudent] = useState({
+    role: 2, // Default: student
+    username: '',
+    password: '',
+    code: '',
+    name: '',
+    email: '',
+    year_level: 1
+  });
   const [loading, setLoading] = useState(false);
 
   // Sync with parent students prop
@@ -41,6 +51,58 @@ function StudentManagement({ students = [], onUpdate }) {
       year_level: student.year_level
     });
     setShowEditModal(true);
+  };
+
+  const handleAddClick = () => {
+    setNewStudent({
+      role: 2,
+      username: '',
+      password: '',
+      code: '',
+      name: '',
+      email: '',
+      year_level: 1
+    });
+    setShowAddModal(true);
+  };
+
+  const handleAddStudent = async () => {
+    if (!newStudent.username || !newStudent.password || !newStudent.code || !newStudent.name || !newStudent.email) {
+      alert('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    // Validate year_level for students
+    if (newStudent.role === 2 && !newStudent.year_level) {
+      alert('Vui lòng chọn năm học cho sinh viên');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      
+      // Prepare data for register API
+      const registerData = {
+        username: newStudent.username,
+        password: newStudent.password,
+        code: newStudent.code,
+        name: newStudent.name,
+        email: newStudent.email,
+        role: newStudent.role,
+        ...(newStudent.role === 2 && { year_level: newStudent.year_level })
+      };
+
+      await apiService.register(registerData);
+      
+      alert(`Thêm ${newStudent.role === 2 ? 'sinh viên' : 'giáo viên'} thành công!`);
+      setShowAddModal(false);
+      if (onUpdate) onUpdate(); // Trigger parent refresh
+    } catch (err) {
+      console.error('Error creating user:', err);
+      alert(err.message || `Có lỗi xảy ra khi thêm ${newStudent.role === 2 ? 'sinh viên' : 'giáo viên'}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleEditStudent = async () => {
@@ -102,7 +164,10 @@ function StudentManagement({ students = [], onUpdate }) {
   return (
     <div className="student-management">
       <div className="management-header">
-        <h2>Quản lý học sinh</h2>
+        <h2>Quản lý người dùng</h2>
+        <button onClick={handleAddClick} className="add-student-btn">
+          + Thêm người dùng
+        </button>
       </div>
 
       {loading && <div className="loading">Đang xử lý...</div>}
@@ -193,6 +258,96 @@ function StudentManagement({ students = [], onUpdate }) {
                 {loading ? 'Đang lưu...' : 'Lưu'}
               </button>
               <button onClick={() => setShowEditModal(false)} className="cancel-button">Hủy</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showAddModal && (
+        <div className="modal-overlay" onClick={() => setShowAddModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Thêm người dùng mới</h3>
+            <div className="form-group">
+              <label>Loại tài khoản</label>
+              <select
+                value={newStudent.role}
+                onChange={(e) => {
+                  const role = parseInt(e.target.value);
+                  setNewStudent({ 
+                    ...newStudent, 
+                    role,
+                    code: role === 2 ? 'SV' : 'GV',
+                    username: role === 2 ? 'SV' : 'GV'
+                  });
+                }}
+              >
+                <option value={2}>Sinh viên</option>
+                <option value={3}>Giáo viên</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Tên đăng nhập (username)</label>
+              <input
+                type="text"
+                value={newStudent.username}
+                onChange={(e) => setNewStudent({ ...newStudent, username: e.target.value })}
+                placeholder={newStudent.role === 2 ? "VD: SV006" : "VD: GV006"}
+              />
+            </div>
+            <div className="form-group">
+              <label>Mật khẩu</label>
+              <input
+                type="password"
+                value={newStudent.password}
+                onChange={(e) => setNewStudent({ ...newStudent, password: e.target.value })}
+                placeholder="Nhập mật khẩu"
+              />
+            </div>
+            <div className="form-group">
+              <label>Mã {newStudent.role === 2 ? 'sinh viên' : 'giáo viên'}</label>
+              <input
+                type="text"
+                value={newStudent.code}
+                onChange={(e) => setNewStudent({ ...newStudent, code: e.target.value })}
+                placeholder={newStudent.role === 2 ? "VD: SV006" : "VD: GV006"}
+              />
+            </div>
+            <div className="form-group">
+              <label>Họ tên</label>
+              <input
+                type="text"
+                value={newStudent.name}
+                onChange={(e) => setNewStudent({ ...newStudent, name: e.target.value })}
+                placeholder="Họ và tên đầy đủ"
+              />
+            </div>
+            <div className="form-group">
+              <label>Email</label>
+              <input
+                type="email"
+                value={newStudent.email}
+                onChange={(e) => setNewStudent({ ...newStudent, email: e.target.value })}
+                placeholder={newStudent.role === 2 ? "email@student.edu.vn" : "email@teacher.edu.vn"}
+              />
+            </div>
+            {newStudent.role === 2 && (
+              <div className="form-group">
+                <label>Năm học</label>
+                <select
+                  value={newStudent.year_level}
+                  onChange={(e) => setNewStudent({ ...newStudent, year_level: parseInt(e.target.value) })}
+                >
+                  <option value={1}>Năm 1</option>
+                  <option value={2}>Năm 2</option>
+                  <option value={3}>Năm 3</option>
+                </select>
+              </div>
+            )}
+            <div className="modal-actions">
+              <button onClick={handleAddStudent} className="save-button" disabled={loading}>
+                {loading ? 'Đang thêm...' : `Thêm ${newStudent.role === 2 ? 'sinh viên' : 'giáo viên'}`}
+              </button>
+              <button onClick={() => setShowAddModal(false)} className="cancel-button">Hủy</button>
             </div>
           </div>
         </div>

@@ -35,6 +35,33 @@ export class FeedbackController {
     }
   }
 
+  // GET /api/feedbacks/teacher/:teacherId - Lấy feedbacks của giáo viên (feedbacks mà giáo viên được đánh giá)
+  async getFeedbacksByTeacher(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { teacherId } = req.params;
+      const connection = await this.feedbackRepo['getConnection']();
+      try {
+        const [rows] = await connection.execute(
+          `SELECT f.*, 
+                  u.name as student_name, u.code as student_code
+           FROM feedbacks f
+           JOIN students s ON f.student_id = s.id
+           JOIN users u ON s.user_id = u.id
+           WHERE f.teacher_id = ?
+           ORDER BY f.created_at DESC`,
+          [teacherId]
+        );
+        connection.release();
+        res.status(200).json({ success: true, data: rows });
+      } catch (error) {
+        connection.release();
+        throw error;
+      }
+    } catch (error) {
+      next(error);
+    }
+  }
+
   // POST /api/feedbacks - Tạo feedback mới
   async createFeedback(req: Request, res: Response, next: NextFunction) {
     try {

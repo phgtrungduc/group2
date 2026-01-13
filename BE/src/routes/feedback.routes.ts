@@ -10,6 +10,7 @@ router.use(authenticateJWT);
 router.get('/', feedbackController.getAllFeedbacks.bind(feedbackController));
 router.get('/teachers', feedbackController.getTeachers.bind(feedbackController));
 router.get('/student/:studentId', feedbackController.getFeedbacksByStudent.bind(feedbackController));
+router.get('/teacher/:teacherId', feedbackController.getFeedbacksByTeacher.bind(feedbackController));
 router.post('/', feedbackController.createFeedback.bind(feedbackController));
 router.put('/:id/reply', feedbackController.replyFeedback.bind(feedbackController));
 

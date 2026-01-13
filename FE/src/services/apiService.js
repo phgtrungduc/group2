@@ -24,6 +24,14 @@ const fetchAPI = async (url, options = {}) => {
 };
 
 export const apiService = {
+  // Auth
+  async register(data) {
+    return fetchAPI(API_ENDPOINTS.REGISTER, {
+      method: 'POST',
+      body: JSON.stringify(data),
+    });
+  },
+
   // Students
   async getAllStudents() {
     return fetchAPI(API_ENDPOINTS.STUDENTS);
@@ -110,6 +118,10 @@ export const apiService = {
 
   async getFeedbacksByStudent(studentId) {
     return fetchAPI(API_ENDPOINTS.FEEDBACKS_BY_STUDENT(studentId));
+  },
+
+  async getFeedbacksByTeacher(teacherId) {
+    return fetchAPI(API_ENDPOINTS.FEEDBACKS_BY_TEACHER(teacherId));
   },
 
   async createFeedback(data) {

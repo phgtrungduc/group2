@@ -1223,11 +1223,43 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 25px;
+  margin-bottom: 30px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #e9ecef;
 }
 
 .management-header h2 {
   margin: 0;
+  color: #212529;
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.add-student-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 24px;
+  background: linear-gradient(135deg, #003d82 0%, #0066cc 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 61, 130, 0.3);
+}
+
+.add-student-btn:hover {
+  background: linear-gradient(135deg, #002d62 0%, #0052a3 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 61, 130, 0.4);
+}
+
+.add-student-btn:active {
+  transform: translateY(0);
+  box-shadow: 0 2px 8px rgba(0, 61, 130, 0.3);
 }
 
 .add-button {
