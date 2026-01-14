@@ -27,7 +27,6 @@ export class AuthService {
 
   async register(data: any): Promise<{ user: UserSafe; profile?: StudentFull | null }>{
     let role = Number(data.role);
-    role = 1;
     // Common checks for username/email
     if (await this.userRepo.existsByUsername(data.username)) {
       throw Object.assign(new Error('Username already exists'), { statusCode: 400 });
