@@ -3,7 +3,7 @@ export interface Score {
   id: string;
   student_id: string;
   subject_id: string;
-  type: 'midterm' | 'final' | 'quiz' | 'assignment' | 'other';
+  type: number; // 1=midterm, 2=final, 3=quiz, 4=assignment, 5=other
   score: number;
   created_at?: Date;
   updated_at?: Date;
@@ -21,12 +21,12 @@ export interface ScoreFull extends Score {
 export interface CreateScoreDto {
   student_id: string;
   subject_id: string;
-  type: 'midterm' | 'final' | 'quiz' | 'assignment' | 'other';
+  type: number; // Use enum value
   score: number;
 }
 
 // Update Score DTO
 export interface UpdateScoreDto {
-  type?: 'midterm' | 'final' | 'quiz' | 'assignment' | 'other';
+  type?: number; // Use enum value
   score?: number;
 }

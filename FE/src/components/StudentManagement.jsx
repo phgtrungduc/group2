@@ -3,10 +3,13 @@ import { apiService } from '../services/apiService';
 
 function StudentManagement({ students = [], onUpdate }) {
   const [localStudents, setLocalStudents] = useState(students);
+  const [subjects, setSubjects] = useState([]);
   const [selectedStudent, setSelectedStudent] = useState(null);
   const [showEditModal, setShowEditModal] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showScoreModal, setShowScoreModal] = useState(false);
   const [editStudent, setEditStudent] = useState({});
+  const [scoreData, setScoreData] = useState({ subject: '', type: '', score: '' });
   const [newStudent, setNewStudent] = useState({
     role: 2, // Default: student
     username: '',
@@ -22,6 +25,20 @@ function StudentManagement({ students = [], onUpdate }) {
   useEffect(() => {
     setLocalStudents(students);
   }, [students]);
+
+  // Fetch subjects from API
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        const subjectsData = await apiService.getAllSubjects();
+        setSubjects(subjectsData);
+      } catch (err) {
+        console.error('Error fetching subjects:', err);
+      }
+    };
+
+    fetchSubjects();
+  }, []);
 
   const getStudentAverage = (student) => {
     if (!student.scores || student.scores.length === 0) return 0;
@@ -51,6 +68,13 @@ function StudentManagement({ students = [], onUpdate }) {
       year_level: student.year_level
     });
     setShowEditModal(true);
+  };
+
+  const openScoreModal = (student) => {
+    setSelectedStudent(student);
+    const defaultSubject = subjects.length > 0 ? subjects[0].id : '';
+    setScoreData({ subject: defaultSubject, type: '1', score: '' }); // Default to midterm (1)
+    setShowScoreModal(true);
   };
 
   const handleAddClick = () => {
@@ -161,6 +185,39 @@ function StudentManagement({ students = [], onUpdate }) {
     }
   };
 
+  const handleUpdateScore = async () => {
+    if (!scoreData.subject || !scoreData.type || !scoreData.score) {
+      alert('Vui lòng điền đầy đủ thông tin');
+      return;
+    }
+
+    const score = parseFloat(scoreData.score);
+    if (isNaN(score) || score < 0 || score > 10) {
+      alert('Điểm số phải từ 0 đến 10');
+      return;
+    }
+
+    try {
+      setLoading(true);
+      // Call API to update score with integer type
+      await apiService.updateScore(selectedStudent.id, {
+        subject_id: scoreData.subject, // Keep as string (UUID)
+        type: parseInt(scoreData.type), // Send as integer
+        score: score
+      });
+      
+      setShowScoreModal(false);
+      setScoreData({ subject: '', type: '', score: '' });
+      alert('Cập nhật điểm thành công!');
+      if (onUpdate) onUpdate(); // Trigger parent refresh
+    } catch (err) {
+      console.error('Error updating score:', err);
+      alert('Có lỗi xảy ra khi cập nhật điểm');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="student-management">
       <div className="management-header">
@@ -205,6 +262,13 @@ function StudentManagement({ students = [], onUpdate }) {
                         title="Sửa thông tin"
                       >
                         Sửa
+                      </button>
+                      <button 
+                        onClick={() => openScoreModal(student)} 
+                        className="action-btn score-btn"
+                        title="Chấm điểm"
+                      >
+                        Điểm
                       </button>
                       <button 
                         onClick={() => handleDeleteStudent(student.id)} 
@@ -258,6 +322,58 @@ function StudentManagement({ students = [], onUpdate }) {
                 {loading ? 'Đang lưu...' : 'Lưu'}
               </button>
               <button onClick={() => setShowEditModal(false)} className="cancel-button">Hủy</button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showScoreModal && selectedStudent && (
+        <div className="modal-overlay" onClick={() => setShowScoreModal(false)}>
+          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+            <h3>Chấm điểm - {selectedStudent.name}</h3>
+            <div className="form-group">
+              <label>Môn học</label>
+              <select
+                value={scoreData.subject}
+                onChange={(e) => setScoreData({ ...scoreData, subject: e.target.value })}
+              >
+                <option value="">-- Chọn môn học --</option>
+                {subjects.map(subject => (
+                  <option key={subject.id} value={subject.id}>{subject.subject_name}</option>
+                ))}
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Loại điểm</label>
+              <select
+                value={scoreData.type}
+                onChange={(e) => setScoreData({ ...scoreData, type: e.target.value })}
+              >
+                <option value="">-- Chọn loại điểm --</option>
+                <option value="1">Giữa kỳ</option>
+                <option value="2">Cuối kỳ</option>
+                <option value="3">Kiểm tra</option>
+                <option value="4">Bài tập</option>
+                <option value="5">Khác</option>
+              </select>
+            </div>
+            <div className="form-group">
+              <label>Điểm số (0-10)</label>
+              <input
+                type="number"
+                min="0"
+                max="10"
+                step="0.1"
+                value={scoreData.score}
+                onChange={(e) => setScoreData({ ...scoreData, score: e.target.value })}
+                placeholder="8.5"
+              />
+            </div>
+            <div className="modal-actions">
+              <button onClick={handleUpdateScore} className="save-button" disabled={loading}>
+                {loading ? 'Đang lưu...' : 'Lưu điểm'}
+              </button>
+              <button onClick={() => setShowScoreModal(false)} className="cancel-button">Hủy</button>
             </div>
           </div>
         </div>

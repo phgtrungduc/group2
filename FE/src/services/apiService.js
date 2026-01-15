@@ -70,6 +70,27 @@ export const apiService = {
     });
   },
 
+  async updateScore(studentId, data) {
+    return fetchAPI(API_ENDPOINTS.SCORES, {
+      method: 'POST',
+      body: JSON.stringify({
+        student_id: studentId,
+        subject_id: data.subject_id, // Keep as string (UUID)
+        type: parseInt(data.type), // Only type is integer
+        score: data.score
+      }),
+    });
+  },
+
+  // Subjects
+  async getAllSubjects() {
+    return fetchAPI(API_ENDPOINTS.SUBJECTS);
+  },
+
+  async getSubjectById(id) {
+    return fetchAPI(API_ENDPOINTS.SUBJECT_BY_ID(id));
+  },
+
   // Tests
   async getTestsByStudent(studentId) {
     return fetchAPI(API_ENDPOINTS.TESTS_BY_STUDENT(studentId));

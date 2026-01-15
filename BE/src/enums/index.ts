@@ -19,6 +19,28 @@ export enum ScoreType {
 }
 
 /**
+ * Score Type Labels
+ */
+export const ScoreTypeLabels = {
+  [ScoreType.MIDTERM]: 'midterm',
+  [ScoreType.FINAL]: 'final',
+  [ScoreType.QUIZ]: 'quiz',
+  [ScoreType.ASSIGNMENT]: 'assignment',
+  [ScoreType.OTHER]: 'other',
+};
+
+/**
+ * String to ScoreType mapping
+ */
+export const StringToScoreType: { [key: string]: ScoreType } = {
+  'midterm': ScoreType.MIDTERM,
+  'final': ScoreType.FINAL,
+  'quiz': ScoreType.QUIZ,
+  'assignment': ScoreType.ASSIGNMENT,
+  'other': ScoreType.OTHER,
+};
+
+/**
  * Role name mappings
  */
 export const RoleNames: Record<Role, string> = {

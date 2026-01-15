@@ -14,6 +14,10 @@ export const API_ENDPOINTS = {
   SCORES_BY_STUDENT: (studentId) => `/scores/student/${studentId}`,
   SCORES: '/scores',
   
+  // Subjects
+  SUBJECTS: '/subjects',
+  SUBJECT_BY_ID: (id) => `/subjects/${id}`,
+  
   // Tests
   TESTS_BY_STUDENT: (studentId) => `/tests/student/${studentId}`,
   TESTS: '/tests',
